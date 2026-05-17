@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+package analytics;
+
+// Эта строка нужна только для Go, она указывает, куда сгенерировать код
+option go_package = "./internal/transport/grpc/pb";
+
+// Описываем сам сервис и его методы
+service SpatialAnalytics {
+  rpc CalculateHeatmap (HeatmapRequest) returns (HeatmapResponse);
+}
+
+// Описываем структуру Точки
+message Point {
+  double lat = 1;
+  double lon = 2;
+  double weight = 3; // Сюда Python запишет результат (от 0 до 1)
+}
+
+// Что отправляем из Go в Python
+message HeatmapRequest {
+  repeated Point points = 1; // repeated означает массив (slice)
+}
+
+// Что возвращает Python в Go
+message HeatmapResponse {
+  repeated Point density_points = 1;
+}
